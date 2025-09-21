@@ -1,0 +1,7 @@
+SQLAlchemy
+python-dotenv
+fastapi[all]
+pydantic
+requests
+starlette
+isodate

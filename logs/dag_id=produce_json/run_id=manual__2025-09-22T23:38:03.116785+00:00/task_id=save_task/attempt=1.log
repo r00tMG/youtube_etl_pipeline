@@ -1,0 +1,14 @@
+{"timestamp":"2025-09-22T23:38:06.607933","level":"info","event":"DAG bundles loaded: dags-folder, example_dags","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager"}
+{"timestamp":"2025-09-22T23:38:06.608465","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T23:38:06.682552","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T23:38:06.704957Z","level":"info","event":"Task instance is in running state","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T23:38:06.705103Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.QUEUED","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T23:38:06.705297Z","level":"info","event":"Current task name:save_task","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T23:38:06.705414Z","level":"info","event":"Dag name:produce_json","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T23:38:06.759575","level":"warning","event":"Encountered 403 Forbidden with reason \"quotaExceeded\"","logger":"googleapiclient.http"}
+{"timestamp":"2025-09-22T23:38:06.759946Z","level":"info","event":"Error extract data youtube:  <HttpError 403 when requesting https://youtube.googleapis.com/youtube/v3/search?q=MrBeast&part=id&type=channel&maxResults=1&key=AIzaSyDix3bIAoLldA6cpjJYqGuErKny3PFQAn0&alt=json returned \"The request cannot be completed because you have exceeded your <a href=\"/youtube/v3/getting-started#quota\">quota</a>.\". Details: \"[{'message': 'The request cannot be completed because you have exceeded your <a href=\"/youtube/v3/getting-started#quota\">quota</a>.', 'domain': 'youtube.quota', 'reason': 'quotaExceeded'}]\">","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T23:38:06.760100Z","level":"info","event":"Fichier sauvegardé: ./files/data_20250922_233806.json","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T23:38:06.760226","level":"info","event":"Done. Returned value was: None","logger":"airflow.task.operators.airflow.providers.standard.operators.python.PythonOperator"}
+{"timestamp":"2025-09-22T23:38:06.772339Z","level":"info","event":"Task instance in success state","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T23:38:06.772457Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.RUNNING","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T23:38:06.772646Z","level":"info","event":"Task operator:<Task(PythonOperator): save_task>","chan":"stdout","logger":"task"}

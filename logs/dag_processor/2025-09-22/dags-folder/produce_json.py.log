@@ -523,3 +523,9 @@
 {"timestamp":"2025-09-22T08:29:10.964107","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
 {"timestamp":"2025-09-22T08:29:41.243638","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
 {"timestamp":"2025-09-22T08:29:41.290136","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T08:32:12.916015","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T08:32:12.962247","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T08:32:43.229860","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T08:32:43.292765","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T08:33:13.549195","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T08:33:13.598003","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}

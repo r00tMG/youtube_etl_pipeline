@@ -1,5 +1,6 @@
 from _datetime import datetime
 import os
+import json
 from fastapi import APIRouter
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
@@ -66,6 +67,21 @@ async def get(channel_handle:str="MrBeast"):
             "comment_count": stats.get("commentCount", "0"),
             "duration_readable": duration_readable
         })
+    DATA_DIR = "./files"  
+    os.makedirs(DATA_DIR, exist_ok=True) 
+    print("file created")
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    filename = f"{DATA_DIR}/data_{timestamp}.json"
+    datas={
+        "channel_handle": channel_handle,
+        "extraction_date": datetime.utcnow().isoformat(),
+        "total_videos": len(videos),
+        "videos": videos
+    }
+    with open(filename, "w", encoding="utf-8") as f:
+        print("le fichier est en écriture")
+        json.dump(datas, f, ensure_ascii=False, indent=4)
+        print("le fichier est sauvegarder")
 
     return {
         "channel_handle": channel_handle,

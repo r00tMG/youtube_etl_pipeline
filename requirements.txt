@@ -1,7 +1,11 @@
 SQLAlchemy
+psycopg2
 python-dotenv
 fastapi[all]
 pydantic
 requests
 starlette
 isodate
+uvicorn
+google-api-python-client
+asyncpg

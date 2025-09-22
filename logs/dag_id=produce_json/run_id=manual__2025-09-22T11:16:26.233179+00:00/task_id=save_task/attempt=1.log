@@ -1,0 +1,12 @@
+{"timestamp":"2025-09-22T11:16:32.328977","level":"info","event":"DAG bundles loaded: dags-folder, example_dags","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager"}
+{"timestamp":"2025-09-22T11:16:32.329480","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T11:16:32.418406","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T11:16:32.439860Z","level":"info","event":"Task instance is in running state","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T11:16:32.440003Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.QUEUED","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T11:16:32.440139Z","level":"info","event":"Current task name:save_task","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T11:16:32.440239Z","level":"info","event":"Dag name:produce_json","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T11:16:32.441759Z","level":"info","event":"Fichier sauvegardé: ./files/data_20250922_111632.json","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T11:16:32.442152","level":"info","event":"Done. Returned value was: None","logger":"airflow.task.operators.airflow.providers.standard.operators.python.PythonOperator"}
+{"timestamp":"2025-09-22T11:16:32.453419Z","level":"info","event":"Task instance in success state","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T11:16:32.453546Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.RUNNING","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T11:16:32.453726Z","level":"info","event":"Task operator:<Task(PythonOperator): save_task>","chan":"stdout","logger":"task"}

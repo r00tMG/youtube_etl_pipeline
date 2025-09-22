@@ -1,0 +1,20 @@
+{"timestamp":"2025-09-22T10:13:57.218570","level":"info","event":"DAG bundles loaded: dags-folder, example_dags","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager"}
+{"timestamp":"2025-09-22T10:13:57.219176","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T10:13:57.285670","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T10:13:57.306960Z","level":"info","event":"Task instance is in running state","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.307103Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.QUEUED","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.307245Z","level":"info","event":"Current task name:save_task","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.307353Z","level":"info","event":"Dag name:produce_json","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.308656Z","level":"info","event":"file created","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.737760Z","level":"info","event":"snippet:  None","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.769130Z","level":"info","event":"snippet:  None","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.795067Z","level":"info","event":"snippet:  None","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.818940Z","level":"info","event":"snippet:  None","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.842437Z","level":"info","event":"snippet:  None","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.842657Z","level":"info","event":"le fichier est en écriture","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.842796Z","level":"info","event":"le fichier est sauvegarder","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.842901","level":"info","event":"Done. Returned value was: {'status': 200, 'message': \"L'extraction a réussie avec succes\"}","logger":"airflow.task.operators.airflow.providers.standard.operators.python.PythonOperator"}
+{"timestamp":"2025-09-22T10:13:57.843192","level":"info","event":"Pushing xcom","ti":"RuntimeTaskInstance(id=UUID('019970ea-5c0e-756a-ac34-8dc8b18853dc'), task_id='save_task', dag_id='produce_json', run_id='manual__2025-09-22T10:13:51.225722+00:00', try_number=1, map_index=-1, hostname='codespaces-c2d229', context_carrier=None, task=<Task(PythonOperator): save_task>, bundle_instance=LocalDagBundle(name=dags-folder), max_tries=0, start_date=datetime.datetime(2025, 9, 22, 10, 13, 57, 199527, tzinfo=datetime.timezone.utc), end_date=None, state=<TaskInstanceState.RUNNING: 'running'>, is_mapped=False, rendered_map_index=None, log_url='http://localhost:8080/dags/produce_json/runs/manual__2025-09-22T10%3A13%3A51.225722%2B00%3A00/tasks/save_task?try_number=1')","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.862822Z","level":"info","event":"Task instance in success state","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.862928Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.RUNNING","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-22T10:13:57.863096Z","level":"info","event":"Task operator:<Task(PythonOperator): save_task>","chan":"stdout","logger":"task"}

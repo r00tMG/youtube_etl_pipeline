@@ -1,109 +1,26 @@
 import os
 import json
+import isodate
+
 from airflow import DAG
 from fastapi import status
 from datetime import datetime
 from airflow.operators.python import PythonOperator
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
+from datetime import timedelta
 
 
 load_dotenv()
 API_KEY = "AIzaSyDix3bIAoLldA6cpjJYqGuErKny3PFQAn0"
 youtube = build("youtube", "v3", developerKey=API_KEY)
 channel_handle:str="MrBeast"
+DATA_DIR = "./files"
+MAX_QUOTA_PER_DAY = 10000
+USED_QUOTA = 0
 videos = []
 
-def extract_data_youtube(channel_handle):
-    # Récupérer l'ID de la chaîne depuis le handle
-    search_channel = youtube.search().list(
-        q=channel_handle,
-        part="id,snippet",
-        type="channel",
-        maxResults=1
-    ).execute()
-
-    channel_id = search_channel["items"][0]["id"]["channelId"]
-
-    # Récupérer les vidéos récentes de la chaîne
-    search_videos = youtube.search().list(
-        channelId=channel_id,
-        part="id,snippet",
-        order="date",
-        type="video",  
-        maxResults=5
-    ).execute()
-    return search_videos
-
-def data_extract():
-    search_videos=extract_data_youtube(channel_handle)
-    for item in search_videos.get("items", []):
-        id_info = item.get("id", {})
-        snippet = item.get("snippet", {})
-
-        video_id = id_info.get("videoId")
-        if not video_id:
-            continue  
-
-        # Récupérer les stats et la durée
-        video_details = youtube.videos().list(
-            part="contentDetails,statistics",
-            id=video_id
-        ).execute()
-
-        if not video_details["items"]:
-            continue
-
-        details = video_details["items"][0]
-        content = details["contentDetails"]
-        stats = details["statistics"]
-
-        # Construire un format lisible
-        duration_iso = content["duration"]
-        duration_readable = convert_duration(duration_iso)
-        print("snippet: ",snippet.get("comment"))
-        videos.append({
-            "title": snippet.get("title"),
-            "duration": duration_iso,
-            "video_id": video_id,
-            "like_count": stats.get("likeCount", "0"),
-            "view_count": stats.get("viewCount", "0"),
-            "published_at": snippet.get("publishedAt"),
-            "comment_count": stats.get("commentCount", "0"),
-            "duration_readable": duration_readable
-        })
-    return videos
-def format_out():
-    data = {
-        "channel_handle": channel_handle,
-        "extraction_date": datetime.utcnow().isoformat(),
-        "total_videos": len(videos),
-        "videos": videos
-    }
-    return data
-
-def save_json():
-    DATA_DIR = "./files"  
-    os.makedirs(DATA_DIR, exist_ok=True) 
-    print("file created")
-    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    filename = f"{DATA_DIR}/data_{timestamp}.json"
-    datas=format_out() 
-    with open(filename, "w", encoding="utf-8") as f:
-        print("le fichier est en écriture")
-        json.dump(datas, f, ensure_ascii=False, indent=4)
-        print("le fichier est sauvegarder")
-        
-    return {
-        "status":status.HTTP_200_OK,
-        "message":"L'extraction a réussie avec succes",
-    }
-
-
 def convert_duration(duration: str) -> str:
-    """Convertit une durée ISO8601 (PT#M#S) en format mm:ss ou hh:mm:ss"""
-    import isodate
-    from datetime import timedelta
 
     try:
         td: timedelta = isodate.parse_duration(duration)
@@ -117,6 +34,103 @@ def convert_duration(duration: str) -> str:
     except Exception:
         return duration
 
+def extract_data_youtube_paginated():
+    global USED_QUOTA
+    search_channel = youtube.search().list(
+        q=channel_handle,
+        part="id",
+        type="channel",
+        maxResults=1
+    ).execute()
+    USED_QUOTA += 100  # approx pour search.list
+
+    channel_id = search_channel["items"][0]["id"]["channelId"]
+    all_videos = []
+    next_page_token = None
+
+    while True:
+        if USED_QUOTA >= MAX_QUOTA_PER_DAY:
+            print("Quota quotidien atteint, arrêt de l'extraction")
+            break
+
+        search_videos = youtube.search().list(
+            channelId=channel_id,
+            part="id,snippet",
+            order="date",
+            type="video",
+            maxResults=50,
+            pageToken=next_page_token
+        ).execute()
+        USED_QUOTA += 100  
+        items = search_videos.get("items", [])
+        video_items = [item for item in items if "videoId" in item.get("id", {})]
+        all_videos.extend(video_items)
+        print("all videos: ", len(all_videos))
+        next_page_token = search_videos.get("nextPageToken")
+
+        if not next_page_token:
+            break
+
+    return all_videos
+
+def data_extract():
+    global videos, USED_QUOTA
+    search_videos = extract_data_youtube_paginated()
+    print("search videos: ",len(search_videos))
+    video_ids = [item['id']['videoId'] for item in search_videos if 'videoId' in item['id']]
+
+    for i in range(0, len(video_ids), 50):
+        batch_ids = video_ids[i:i+50]
+
+        if USED_QUOTA >= MAX_QUOTA_PER_DAY:
+            print("Quota quotidien atteint, arrêt de la récupération des détails vidéos")
+            break
+
+        video_details = youtube.videos().list(
+            part="contentDetails,statistics,snippet",
+            id=",".join(batch_ids)
+        ).execute()
+        USED_QUOTA += len(batch_ids) * 2  # approx 2 unités par vidéo
+
+        for details in video_details.get("items", []):
+            content = details["contentDetails"]
+            stats = details["statistics"]
+            snippet = details["snippet"]
+
+            duration_iso = content["duration"]
+            duration_readable = convert_duration(duration_iso)
+
+            videos.append({
+                "title": snippet.get("title"),
+                "duration": duration_iso,
+                "video_id": details.get("id"),
+                "like_count": stats.get("likeCount", "0"),
+                "view_count": stats.get("viewCount", "0"),
+                "published_at": snippet.get("publishedAt"),
+                "comment_count": stats.get("commentCount", "0"),
+                "duration_readable": duration_readable
+            })
+    return videos
+
+
+def format_out():
+    return {
+        "channel_handle": channel_handle,
+        "extraction_date": datetime.utcnow().isoformat(),
+        "total_videos": len(videos),
+        "videos": data_extract()
+    }
+
+def save_json():
+    os.makedirs(DATA_DIR, exist_ok=True)
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    filename = f"{DATA_DIR}/data_{timestamp}.json"
+    data = format_out()
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+    print(f"Fichier sauvegardé: {filename}")
+
+
 with DAG(
     dag_id="produce_json",
     description="Sauvegarde des données de MrBeast dans un fichier json",
@@ -127,7 +141,7 @@ with DAG(
     
     extraction_data_youtube_task = PythonOperator(
         task_id="extraction_data_youtube",
-        python_callable=extract_data_youtube
+        python_callable=extract_data_youtube_paginated
     )
     data_extract_task = PythonOperator(
         task_id="data_extract",

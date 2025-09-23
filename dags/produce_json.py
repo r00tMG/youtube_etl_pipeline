@@ -149,8 +149,7 @@ def format_out():
 def save_json():
     try:
         os.makedirs(DATA_DIR, exist_ok=True)
-        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        filename = f"{DATA_DIR}/data_{timestamp}.json"
+        filename = f"{DATA_DIR}/data_youtube_extract.json"
         data = format_out()
         if data:
             with open(filename, "w", encoding="utf-8") as f:

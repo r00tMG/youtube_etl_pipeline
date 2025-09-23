@@ -881,3 +881,13 @@
 {"timestamp":"2025-09-22T23:43:40.748553","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
 {"timestamp":"2025-09-22T23:44:10.809155","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
 {"timestamp":"2025-09-22T23:44:10.880392","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T23:44:41.069068","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T23:44:41.140307","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T23:45:11.288692","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T23:45:11.359914","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T23:45:41.606533","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T23:45:41.676675","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T23:46:11.731771","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T23:46:11.806067","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}
+{"timestamp":"2025-09-22T23:46:42.796909","level":"info","event":"Filling up the DagBag from dags/produce_json.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-22T23:46:42.869735","level":"info","event":"file_cache is only supported with oauth2client<4.0.0","logger":"googleapiclient.discovery_cache"}

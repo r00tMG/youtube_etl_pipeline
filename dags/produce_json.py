@@ -3,19 +3,19 @@ import json
 import isodate
 from airflow import DAG
 from fastapi import status
-from datetime import datetime
+from datetime import datetime, timedelta
 from airflow.operators.python import PythonOperator
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
 from datetime import timedelta
 from googleapiclient.errors import HttpError
 
-
-
-
 load_dotenv()
+
 API_KEY = "AIzaSyDix3bIAoLldA6cpjJYqGuErKny3PFQAn0"
 youtube = build("youtube", "v3", developerKey=API_KEY)
+
+
 channel_handle:str="MrBeast"
 DATA_DIR = "./files"
 MAX_QUOTA_PER_DAY = 10000
@@ -76,8 +76,11 @@ def extract_data_youtube_paginated():
 
         return all_videos
     except HttpError as e:
-        print("Error extract data youtube: ", e)
-
+        if e.resp.status == 403 and "quotaExceeded" in str(e):
+            raise Exception("Quota API YouTube dépassé, extraction stoppée")
+        else:
+            # laisser Airflow faire le retry
+            raise
 def data_extract():
     try:
         global videos, USED_QUOTA
@@ -119,7 +122,12 @@ def data_extract():
                     })
             return videos
     except HttpError as e:
-        print("Error data extract: ", e)
+        if e.resp.status == 403 and "quotaExceeded" in str(e):
+            # pas de retry, on stoppe
+            raise Exception("Quota API YouTube dépassé, extraction stoppée")
+        else:
+            # laisser Airflow faire le retry
+            raise
 
 
 def format_out():
@@ -131,7 +139,12 @@ def format_out():
             "videos": data_extract()
         }
     except HttpError as e:  
-        print(f"Error format out : {e}")  
+        if e.resp.status == 403 and "quotaExceeded" in str(e):
+            # pas de retry, on stoppe
+            raise Exception("Quota API YouTube dépassé, extraction stoppée")
+        else:
+            # laisser Airflow faire le retry
+            raise
 
 def save_json():
     try:
@@ -144,7 +157,12 @@ def save_json():
                 json.dump(data, f, ensure_ascii=False, indent=4)
             print(f"Fichier sauvegardé: {filename}")
     except HttpError as e:
-        print("Error save json: ",e)
+        if e.resp.status == 403 and "quotaExceeded" in str(e):
+            # pas de retry, on stoppe
+            raise Exception("Quota API YouTube dépassé, extraction stoppée")
+        else:
+            # laisser Airflow faire le retry
+            raise
 
 
 with DAG(
@@ -157,19 +175,27 @@ with DAG(
     
     extraction_data_youtube_task = PythonOperator(
         task_id="extraction_data_youtube",
-        python_callable=extract_data_youtube_paginated
+        python_callable=extract_data_youtube_paginated,
+        retries=3,
+        retry_delay=timedelta(minutes=5)
     )
     data_extract_task = PythonOperator(
         task_id="data_extract",
-        python_callable=data_extract
+        python_callable=data_extract,
+        retries=3,
+        retry_delay=timedelta(minutes=5)
     )
     format_out_task=PythonOperator(
         task_id="format_out",
-        python_callable=format_out
+        python_callable=format_out,
+        retries=3,
+        retry_delay=timedelta(minutes=5)
     )
     save_json_task=PythonOperator(
         task_id="save_task",
-        python_callable=save_json
+        python_callable=save_json,
+        retries=3,
+        retry_delay=timedelta(minutes=5)
     )
     
     

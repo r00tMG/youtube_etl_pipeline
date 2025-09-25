@@ -1,0 +1,12 @@
+{"timestamp":"2025-09-25T00:01:38.319046","level":"warning","event":"Could not import pandas. Holidays will not be considered.","logger":"airflow.example_dags.plugins.workday"}
+{"timestamp":"2025-09-25T00:01:38.365042","level":"info","event":"DAG bundles loaded: dags-folder, example_dags","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager"}
+{"timestamp":"2025-09-25T00:01:38.367470","level":"info","event":"Filling up the DagBag from dags/update_db.py","logger":"airflow.models.dagbag.DagBag"}
+{"timestamp":"2025-09-25T00:01:38.951045Z","level":"info","event":"Task instance is in running state","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-25T00:01:38.951486Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.QUEUED","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-25T00:01:38.952765Z","level":"info","event":"Current task name:staging_area","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-25T00:01:38.953092Z","level":"info","event":"Dag name:update_db","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-25T00:01:39.341869Z","level":"info","event":"Chargement staging réussi","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-25T00:01:39.342375","level":"info","event":"Done. Returned value was: None","logger":"airflow.task.operators.airflow.providers.standard.operators.python.PythonOperator"}
+{"timestamp":"2025-09-25T00:01:39.390453Z","level":"info","event":"Task instance in success state","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-25T00:01:39.390728Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.RUNNING","chan":"stdout","logger":"task"}
+{"timestamp":"2025-09-25T00:01:39.392021Z","level":"info","event":"Task operator:<Task(PythonOperator): staging_area>","chan":"stdout","logger":"task"}

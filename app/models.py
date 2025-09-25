@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Integer, String, DateTime, func, Enum, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, DateTime, func, Enum, ForeignKey, Float, JSON
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 
@@ -18,14 +18,15 @@ class User(Base):
     password = Column(String)
     role = Column(Enum(UserRole), default=UserRole.USER)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    predictions = relationship("Prediction", back_populates="users", cascade="all, delete-orphan")
 
-class Prediction(Base):
-    __tablename__ = "predictions"
+class StagingYoutubeData(Base):
+    __tablename__ = "staging_youtube_datas"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="Cascade"))
-    result = Column(String)
-    score = Column(Float)
-    users = relationship("User", back_populates="predictions")
+    channel_handle = Column(String)
+    extraction_date = Column(String)
+    total_videos = Column(Integer)
+    videos = Column(JSON)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
 
 

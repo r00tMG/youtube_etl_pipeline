@@ -1,4 +1,4 @@
-#!/workspaces/youtube_etl_pipeline/.venv/bin/python
+#!/Users/meissagningue/Projects/dev_ia/pipeline_etl_youtube/.venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys

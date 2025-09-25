@@ -9,3 +9,4 @@ isodate
 uvicorn
 google-api-python-client
 asyncpg
+alembic

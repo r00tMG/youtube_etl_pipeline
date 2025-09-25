@@ -2,9 +2,8 @@ import os
 import json
 import isodate
 from airflow import DAG
-from fastapi import status
+from airflow.providers.standard.operators.python import PythonOperator
 from datetime import datetime, timedelta
-from airflow.operators.python import PythonOperator
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
 from datetime import timedelta
@@ -135,7 +134,7 @@ def format_out():
         return {
             "channel_handle": channel_handle,
             "extraction_date": datetime.utcnow().isoformat(),
-            "total_videos": len(videos),
+            "total_videos": len(data_extract()),
             "videos": data_extract()
         }
     except HttpError as e:  

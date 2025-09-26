@@ -1,1 +1,0 @@
-{"timestamp":"2025-09-25T23:32:19.406270","level":"warning","event":"Could not import pandas. Holidays will not be considered.","logger":"airflow.example_dags.plugins.workday"}

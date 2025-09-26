@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 import isodate
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
-from sqlalchemy import MetaData, Table, Column, String, Integer, DateTime, JSON, create_engine
-
+from sqlalchemy import MetaData, Table, Column, String, Integer, DateTime, JSON, create_engine, Interval
+from sqlalchemy.dialects.postgresql import insert
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.database import SessionLocal, DATABASE_URL
 from app.models import StagingYoutubeData
@@ -103,16 +103,57 @@ def load_core():
     engine = create_engine(DATABASE_URL)
     metadata = MetaData()
     transform_datas = transformation_and_clean()
+
     youtube_videos = Table(
-        "youtube_datas",
+        "youtube_videos",
         metadata,
-        Column("id", Integer, primary_key=True),
-        Column("channel_handle", String),
+        Column("id", Integer, primary_key=True, autoincrement=True),
+        Column("channel_handle", String, index=True),
         Column("extraction_date", DateTime),
-        Column("total_videos", Integer),
-        Column("videos", JSON)
+        Column("video_id", String, unique=True),
+        Column("title", String),
+        Column("duration", Interval),
+        Column("duration_readable", String),
+        Column("view_count", Integer),
+        Column("like_count", Integer),
+        Column("comment_count", Integer),
+        Column("published_at", DateTime),
     )
     metadata.create_all(engine)
+    with engine.begin() as conn:
+        stmt = insert(youtube_videos).values([
+            {
+                "channel_handle": transform_datas["channel_handle"],
+                "extraction_date": transform_datas["extraction_date"],
+                "video_id": video["video_id"],
+                "title": video["title"],
+                "duration": video["duration"],
+                "duration_readable": video["duration_readable"],
+                "view_count": video["view_count"],
+                "like_count": video["like_count"],
+                "comment_count": video["comment_count"],
+                "published_at": video["published_at"]
+            }
+            for video in transform_datas["videos"]
+        ])
+
+        stmt = stmt.on_conflict_do_update(
+            index_elements=["video_id"],
+            set_={
+                "title": stmt.excluded.title,
+                "duration": stmt.excluded.duration,
+                "duration_readable": stmt.excluded.duration_readable,
+                "view_count": stmt.excluded.view_count,
+                "like_count": stmt.excluded.like_count,
+                "comment_count": stmt.excluded.comment_count,
+                "published_at": stmt.excluded.published_at,
+                "extraction_date": stmt.excluded.extraction_date,
+            }
+        )
+        conn.execute(stmt)
+    return {
+        "message":"Chargement core a réussie"
+    }
 
 with DAG(
     dag_id="update_db",
@@ -140,4 +181,10 @@ with DAG(
         retries=3,
         retry_delay=timedelta(minutes=5)
     )
-    read_json_task >> staging_area_task >> transformation_and_clean_task
+    load_core_task = PythonOperator(
+        task_id="load_core",
+        python_callable=load_core,
+        retries=3,
+        retry_delay=timedelta(minutes=5)
+    )
+    read_json_task >> staging_area_task >> transformation_and_clean_task >> load_core_task

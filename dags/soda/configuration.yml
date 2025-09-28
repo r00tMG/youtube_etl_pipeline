@@ -1,0 +1,6 @@
+data_source postgres_db:
+	type:postgres
+	host:localhost
+	username:postgres
+	password:
+	database:pipeline_elt_youtube_db

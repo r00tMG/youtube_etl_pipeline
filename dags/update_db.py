@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import isodate
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
+from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
 from sqlalchemy import MetaData, Table, Column, String, Integer, DateTime, JSON, create_engine, Interval
 from sqlalchemy.dialects.postgresql import insert
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -187,4 +188,8 @@ with DAG(
         retries=3,
         retry_delay=timedelta(minutes=5)
     )
-    read_json_task >> staging_area_task >> transformation_and_clean_task >> load_core_task
+    trigger_quality = TriggerDagRunOperator(
+        task_id="trigger_data_quality",
+        trigger_dag_id="data_quality"
+    )
+    read_json_task >> staging_area_task >> transformation_and_clean_task >> load_core_task >> trigger_quality

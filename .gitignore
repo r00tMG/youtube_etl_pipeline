@@ -1,6 +1,6 @@
-./.env
-./.venv
-./logs
-./config
-./plugins
-./migrations
+.env
+.venv
+logs
+config
+plugins
+migrations

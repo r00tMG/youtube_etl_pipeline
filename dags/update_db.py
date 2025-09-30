@@ -1,12 +1,12 @@
 import json
 import os, sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 import isodate
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.standard.operators.trigger_dagrun import TriggerDagRunOperator
-from sqlalchemy import MetaData, Table, Column, String, Integer, DateTime, JSON, create_engine, Interval
+from sqlalchemy import MetaData, Table, Column, String, Integer, DateTime, JSON, create_engine, Interval, Date, cast
 from sqlalchemy.dialects.postgresql import insert
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.database import SessionLocal, DATABASE_URL
@@ -68,13 +68,25 @@ def parse_duration(value):
 
 def transformation_and_clean():
     db=SessionLocal()
-    datas = db.query(StagingYoutubeData).all()
-    channel_handle=datas[0].channel_handle
-    extraction_date=datetime.fromisoformat(datas[0].extraction_date).date()
+    today = date.today()
+
+    # récupérer uniquement les données du jour
+    datas = (
+        db.query(StagingYoutubeData)
+        .filter(cast(StagingYoutubeData.extraction_date, Date) == today)  # si extraction_date est un datetime
+        .all()
+    )
+
+    if not datas:
+        print(f"Aucune donnée trouvée pour la date {today}")
+        return None
+    data = datas[0]
+    channel_handle=data.channel_handle
+    extraction_date=datetime.fromisoformat(data.extraction_date).date()
     seen_ids = set()
     clean_videos = []
 
-    for video in datas[0].videos:  # vidéos déjà list/dict
+    for video in data.videos:
         video_id = video["video_id"]
 
         if video_id in seen_ids:
@@ -96,7 +108,7 @@ def transformation_and_clean():
     return {
         "channel_handle": channel_handle,
         "extraction_date": extraction_date,
-        "total_videos":datas[0].total_videos,
+        "total_videos":len(data.total_videos),
         "videos": clean_videos
     }
 
@@ -190,6 +202,11 @@ with DAG(
     )
     trigger_quality = TriggerDagRunOperator(
         task_id="trigger_data_quality",
-        trigger_dag_id="data_quality"
+        trigger_dag_id="data_quality",
+        #wait_for_completion=True,  # 👈 attend la fin
+        #poke_interval=60,  # check toutes les 60s
+        #reset_dag_run=True,
+        #allowed_states=["success"],
+        #failed_states=["failed"]
     )
     read_json_task >> staging_area_task >> transformation_and_clean_task >> load_core_task >> trigger_quality

@@ -159,7 +159,6 @@ def save_json():
             # pas de retry, on stoppe
             raise Exception("Quota API YouTube dépassé, extraction stoppée")
         else:
-            # laisser Airflow faire le retry
             raise
 
 

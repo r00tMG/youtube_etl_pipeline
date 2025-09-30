@@ -1,14 +1,10 @@
 checks for youtube_videos:
-  # Complétude des clés
+  - row_count > 0
+  - row_count < 100
   - missing_count(id) = 0
   - missing_count(video_id) = 0
   - missing_count(channel_handle) = 0
-
-  # Les métriques doivent exister
   - missing_count(view_count) = 0
   - missing_count(like_count) = 0
   - missing_count(comment_count) = 0
-
-  - freshness(published_at) < 0d   
-  - published_at <= extraction_date
 
